@@ -29,7 +29,8 @@ public class Frame extends JFrame implements ActionListener{
   public void actionPerformed(ActionEvent e){
     //System.out.println(this.keyboardInput.getKeys().get("w").getClass());
     Main.player.act(this.keyboardInput.getKeys());
-    Main.platform.act(this.keyboardInput.getKeys());
+    for (Platform platform : Main.platforms)
+      platform.act(this.keyboardInput.getKeys());
     repaint();
   }
 }
@@ -49,7 +50,8 @@ class Pane extends JPanel{
     g.setColor(Color.white);
     g.fillRect(0, 0, this.width, this.height);
     Main.player.draw(g);
-    Main.platform.draw(g);
+    for (Platform platform : Main.platforms)
+      platform.draw(g);
   }
 }
 

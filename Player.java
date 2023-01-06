@@ -54,12 +54,14 @@ public class Player extends Thing{
   }
   public void move(){
     this.velocityY += (Math.abs(this.velocityY) < Math.abs(this.MAX_SPEED_Y)) ? this.DECREASE_SPEED_Y : 0;
-
-    if(this.getMaxY() > Main.platform.getMinY()){
-      this.velocityY = 0;
-      this.onPlatform = true;
-    }
     
+    for(Platform platform : Main.platforms){
+      if(this.getMaxY() > platform.getMinY()){
+        this.velocityY = 0;
+        this.onPlatform = true;
+      }
+    }
+
     if(this.dirY == this.UP){
       if(this.onPlatform){
         this.velocityY = this.JUMP_Y;
