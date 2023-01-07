@@ -6,6 +6,9 @@ import javax.lang.model.util.ElementScanner14;
 public class Player extends Thing{
 
   private boolean onPlatform;
+  private boolean blockedTop;
+  private boolean blockedLeft;
+  private boolean blockedRight;
 
   private double velocityX;
   private double velocityY;
@@ -32,6 +35,9 @@ public class Player extends Thing{
   public Player(int x, int y, int width, int height){
     super(x, y, width, height);
     this.onPlatform = false;
+    this.blockedTop = false;
+    this.blockedLeft = false;
+    this.blockedRight = false;
     this.velocityX = 0;
     this.velocityY = 0;
   }
@@ -53,19 +59,54 @@ public class Player extends Thing{
     this.y += this.velocityY;
   }
   public void move(){
-    this.velocityY += (Math.abs(this.velocityY) < Math.abs(this.MAX_SPEED_Y)) ? this.DECREASE_SPEED_Y : 0;
+    if(!this.onPlatform){
+      this.velocityY += (Math.abs(this.velocityY) < Math.abs(this.MAX_SPEED_Y)) ? this.DECREASE_SPEED_Y : 0;
+    }
     
+
+    int countY = 0, countX = 0;
     for(Platform platform : Main.platforms){
-      if((this.getMaxX() > platform.getMinX() && this.getMaxX() < platform.getMinX()) || (this.getMinX() < platform.getMaxX() && this.getMinX() > platform.getMinX())){
-        if(this.getMaxY() > platform.getMinY() && this.getMaxY() < platform.getMaxY()){
-          this.velocityY = 0;
-          this.onPlatform = true;
+      double intersectionX = Math.min(this.getMaxX(), platform.getMaxX()) - Math.max(this.getMinX(), platform.getMinX());
+      double intersectionY = Math.min(this.getMaxY(), platform.getMaxY()) - Math.max(this.getMinY(), platform.getMinY());
+      if(intersectionY >= 0 && intersectionX >= 0){
+        //add a line to only check horizontal or vertical based on which intersection is smaller
+        if(intersectionY < intersectionX){
+          if(this.getMaxY() > platform.getMinY() && this.getMaxY() < platform.getMaxY()){
+            this.onPlatform = true;
+            this.blockedTop = false;
+            this.velocityY = this.velocityY > 0 ? 0 : this.velocityY;
+          }
+          else if(this.getMinY() < platform.getMaxY() && this.getMinY() > platform.getMinY()){
+            this.blockedTop = true;
+            this.onPlatform = false;
+            this.velocityY = this.velocityY < 0 ? 0 : this.velocityY;
+          }
         }
-        else if(this.getMinY() < platform.getMaxY() && this.getMinY() > platform.getMinY()){
-          this.velocityY = this.velocityY < 0 ? 0 : this.velocityY;
-          this.onPlatform = false;
+        else{
+          if(this.getMaxX() > platform.getMinX() && this.getMaxX() < platform.getMaxX()){
+            this.blockedRight = true;
+            this.blockedLeft = false;
+            this.velocityX = this.velocityX > 0 ? 0 : this.velocityX;
+          }
+          else if(this.getMinX() < platform.getMaxX() && this.getMinX() > platform.getMinX()){
+            this.blockedLeft = true;
+            this.blockedRight = false;
+            this.velocityX = this.velocityX < 0 ? 0 : this.velocityX;
+          }
         }
       }
+      else{
+        countX ++;
+        countY ++;
+      }
+    }
+    if(countX == Main.platforms.size()){
+      this.blockedRight = false;
+      this.blockedLeft = false;
+    }
+    if(countY == Main.platforms.size()){
+      this.blockedTop = false;
+      this.onPlatform = false;
     }
 
     if(this.dirY == this.UP){
@@ -75,11 +116,11 @@ public class Player extends Thing{
       }
     }
 
-    if(this.dirX == this.RIGHT){
+    if(this.dirX == this.RIGHT && !this.blockedRight){
       if(this.velocityX <= this.MAX_SPEED_X)
         this.velocityX += this.INCREASE_SPEED_X;
     }
-    else if(this.dirX == this.LEFT){
+    else if(this.dirX == this.LEFT && !this.blockedLeft){
       if(this.velocityX >= -this.MAX_SPEED_X)
         this.velocityX -= this.INCREASE_SPEED_X;
     }
