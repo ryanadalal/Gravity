@@ -56,9 +56,15 @@ public class Player extends Thing{
     this.velocityY += (Math.abs(this.velocityY) < Math.abs(this.MAX_SPEED_Y)) ? this.DECREASE_SPEED_Y : 0;
     
     for(Platform platform : Main.platforms){
-      if(this.getMaxY() > platform.getMinY()){
-        this.velocityY = 0;
-        this.onPlatform = true;
+      if((this.getMaxX() > platform.getMinX() && this.getMaxX() < platform.getMinX()) || (this.getMinX() < platform.getMaxX() && this.getMinX() > platform.getMinX())){
+        if(this.getMaxY() > platform.getMinY() && this.getMaxY() < platform.getMaxY()){
+          this.velocityY = 0;
+          this.onPlatform = true;
+        }
+        else if(this.getMinY() < platform.getMaxY() && this.getMinY() > platform.getMinY()){
+          this.velocityY = this.velocityY < 0 ? 0 : this.velocityY;
+          this.onPlatform = false;
+        }
       }
     }
 

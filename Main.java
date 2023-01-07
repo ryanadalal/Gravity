@@ -11,6 +11,6 @@ public class Main {
     player = new Player(100, 100, 25, 25);
     platforms = new ArrayList<Platform>();
     platforms.add(new Platform(0, Integer.parseInt(args[1]) - 60, Integer.parseInt(args[0]), 30));
-    platforms.add(new Platform(0, 500, Integer.parseInt(args[0]), 30));
+    platforms.add(new Platform(200, 500, 100, 30));
   }
 }
