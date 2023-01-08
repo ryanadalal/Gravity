@@ -43,24 +43,24 @@ public class Player extends Thing{
   }
   public void act(Dictionary d){
     if((Boolean) d.get("w"))
-      this.dirY = this.UP;
+      this.dirY = Player.UP;
     else if((Boolean) d.get("s"))
-      this.dirY = this.DOWN;
+      this.dirY = Player.DOWN;
     else
-      this.dirY = this.FLAT;
+      this.dirY = Player.FLAT;
     if((Boolean) d.get("a"))
-      this.dirX = this.LEFT;
+      this.dirX = Player.LEFT;
     else if((Boolean) d.get("d"))
-      this.dirX = this.RIGHT;
+      this.dirX = Player.RIGHT;
     else 
-      this.dirX = this.STILL;
+      this.dirX = Player.STILL;
     move();
     this.x += this.velocityX;
     this.y += this.velocityY;
   }
   public void move(){
     if(!this.onPlatform){
-      this.velocityY += (Math.abs(this.velocityY) < Math.abs(this.MAX_SPEED_Y)) ? this.DECREASE_SPEED_Y : 0;
+      this.velocityY += (Math.abs(this.velocityY) < Math.abs(Player.MAX_SPEED_Y)) ? Player.DECREASE_SPEED_Y : 0;
     }
     
 
@@ -109,24 +109,24 @@ public class Player extends Thing{
       this.onPlatform = false;
     }
 
-    if(this.dirY == this.UP){
+    if(this.dirY == Player.UP){
       if(this.onPlatform){
-        this.velocityY = this.JUMP_Y;
+        this.velocityY = Player.JUMP_Y;
         this.onPlatform = false;
       }
     }
 
-    if(this.dirX == this.RIGHT && !this.blockedRight){
-      if(this.velocityX <= this.MAX_SPEED_X)
-        this.velocityX += this.INCREASE_SPEED_X;
+    if(this.dirX == Player.RIGHT && !this.blockedRight){
+      if(this.velocityX <= Player.MAX_SPEED_X)
+        this.velocityX += Player.INCREASE_SPEED_X;
     }
-    else if(this.dirX == this.LEFT && !this.blockedLeft){
-      if(this.velocityX >= -this.MAX_SPEED_X)
-        this.velocityX -= this.INCREASE_SPEED_X;
+    else if(this.dirX == Player.LEFT && !this.blockedLeft){
+      if(this.velocityX >= -Player.MAX_SPEED_X)
+        this.velocityX -= Player.INCREASE_SPEED_X;
     }
-    else if(this.dirX == this.STILL){
-      this.velocityX += ((this.velocityX > 0) ? this.DECREASE_SPEED_X : -this.DECREASE_SPEED_X);
-      if(Math.abs(this.velocityX) <= Math.abs(this.DECREASE_SPEED_X)){
+    else if(this.dirX == Player.STILL){
+      this.velocityX += ((this.velocityX > 0) ? Player.DECREASE_SPEED_X : -Player.DECREASE_SPEED_X);
+      if(Math.abs(this.velocityX) <= Math.abs(Player.DECREASE_SPEED_X)){
         this.velocityX = 0;
       }
     }
