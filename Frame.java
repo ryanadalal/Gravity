@@ -12,12 +12,11 @@ public class Frame extends JFrame implements ActionListener{
   private Dimension size;
   private KeyboardInput keyboardInput;
   
-  public Frame(String title, int width, int height){
+  public Frame(String title, int size){
     this.setTitle(title);
-    this.size = new Dimension(width, height);
-    this.setSize(size);
+    this.setSize(size, size);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    this.setContentPane(new Pane(width, height));
+    this.setContentPane(new Pane(size));
     this.keyboardInput = new KeyboardInput();
     this.addKeyListener(keyboardInput);
     this.setVisible(true);
@@ -31,27 +30,29 @@ public class Frame extends JFrame implements ActionListener{
     Main.player.act(this.keyboardInput.getKeys());
     for (Platform platform : Main.platforms)
       platform.act(this.keyboardInput.getKeys());
+    for (Enemy enemy : Main.enemies)
+      enemy.act(this.keyboardInput.getKeys());
     repaint();
   }
 }
 
 class Pane extends JPanel{
 
-  private int width;
-  private int height;
+  private int size;
 
-  public Pane(int width, int height){
+  public Pane(int size){
     super(null, true);
-    this.width = width;
-    this.height = height;
+    this.size = size;
   }
   protected void paintComponent(Graphics g){
     this.repaint();
     g.setColor(Color.white);
-    g.fillRect(0, 0, this.width, this.height);
+    g.fillRect(0, 0, this.size, this.size);
     Main.player.draw(g);
     for (Platform platform : Main.platforms)
       platform.draw(g);
+    for (Enemy enemy : Main.enemies)
+      enemy.draw(g);
   }
 }
 

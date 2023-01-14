@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.util.*;
 
-public class Player extends Thing{
+public class Enemy extends Thing{
 
   private boolean onPlatform;
   private boolean blockedTop;
@@ -11,26 +11,12 @@ public class Player extends Thing{
   private double velocityX;
   private double velocityY;
 
-  private int dirY;
-  private int dirX;
-
-  private static final int FLAT = 0;
-  private static final int UP = 1;
-  private static final int DOWN = 2;
-
-  private static final int STILL = 3;
-  private static final int RIGHT = 4;
-  private static final int LEFT = 5;
-
-  private static final double MAX_SPEED_X = 5;
-  private static final double INCREASE_SPEED_X = 0.2;
-  private static final double DECREASE_SPEED_X = -0.1;
+  private static final double SPEED_X = 5;
 
   private static final double MAX_SPEED_Y = 12;
-  private static final double JUMP_Y = -9;
   private static final double DECREASE_SPEED_Y = 0.2;
 
-  public Player(int x, int y, int width, int height){
+  public Enemy(int x, int y, int width, int height){
     super(x, y, width, height);
     this.onPlatform = false;
     this.blockedTop = false;
@@ -40,25 +26,13 @@ public class Player extends Thing{
     this.velocityY = 0;
   }
   public void act(Dictionary d){
-    if((Boolean) d.get("w"))
-      this.dirY = Player.UP;
-    else if((Boolean) d.get("s"))
-      this.dirY = Player.DOWN;
-    else
-      this.dirY = Player.FLAT;
-    if((Boolean) d.get("a"))
-      this.dirX = Player.LEFT;
-    else if((Boolean) d.get("d"))
-      this.dirX = Player.RIGHT;
-    else 
-      this.dirX = Player.STILL;
     move();
     this.x += this.velocityX;
     this.y += this.velocityY;
   }
   public void move(){
     if(!this.onPlatform){
-      this.velocityY += (Math.abs(this.velocityY) < Math.abs(Player.MAX_SPEED_Y)) ? Player.DECREASE_SPEED_Y : 0;
+      this.velocityY += (Math.abs(this.velocityY) < Math.abs(Enemy.MAX_SPEED_Y)) ? Enemy.DECREASE_SPEED_Y : 0;
     }
     
 
@@ -106,31 +80,9 @@ public class Player extends Thing{
       this.blockedTop = false;
       this.onPlatform = false;
     }
-
-    if(this.dirY == Player.UP){
-      if(this.onPlatform){
-        this.velocityY = Player.JUMP_Y;
-        this.onPlatform = false;
-      }
-    }
-
-    if(this.dirX == Player.RIGHT && !this.blockedRight){
-      if(this.velocityX <= Player.MAX_SPEED_X)
-        this.velocityX += Player.INCREASE_SPEED_X;
-    }
-    else if(this.dirX == Player.LEFT && !this.blockedLeft){
-      if(this.velocityX >= -Player.MAX_SPEED_X)
-        this.velocityX -= Player.INCREASE_SPEED_X;
-    }
-    else if(this.dirX == Player.STILL){
-      this.velocityX += ((this.velocityX > 0) ? Player.DECREASE_SPEED_X : -Player.DECREASE_SPEED_X);
-      if(Math.abs(this.velocityX) <= Math.abs(Player.DECREASE_SPEED_X)){
-        this.velocityX = 0;
-      }
-    }
   }
   public void draw(Graphics g){
-    g.setColor(Color.gray);
+    g.setColor(Color.red);
     g.fillRect(this.x, this.y, this.width, this.height);
   }
 }

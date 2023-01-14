@@ -6,34 +6,52 @@ public class Main {
   public static Frame frame;
   public static Player player;
   public static ArrayList<Platform> platforms;
-  private static final int PADDING = 40;
+  public static ArrayList<Enemy> enemies;
 
   public static void main(String[] args) throws IOException{
-    int map_size = Integer.parseInt(args[0]);
+    //int map_size = Integer.parseInt(args[0]);
     
     platforms = new ArrayList<Platform>();
-    
-    File file = new File("./level.txt");
-    BufferedReader reader = new BufferedReader(new FileReader(file));
+    enemies = new ArrayList<Enemy>();
+
+    File file = new File("./" + args[0]);
+    BufferedReader reader = new BufferedReader(new FileReader(args[0]));
     String ln;
-    ArrayList<String[]> map = new ArrayList<String[]>();
+
+    int screen_size = Integer.parseInt(args[1]);
+    int map_size = 0;
     while ((ln = reader.readLine()) != null){
-      map.add(ln.split(""));
-    }
-    int multipleX = (int) (map_size / map.get(0).length);
-    int multipleY = (int) (map_size / map.size());
-    for(int i = 0; i < map.size(); i ++){
-      String[] line = map.get(i);
-      for(int j = 0; j < map.get(0).length; j ++){
-        String spot = line[j];
-        if(spot.equalsIgnoreCase("S")){
-          player = new Player(j * multipleX, i * multipleY, multipleX, multipleY);
-        }
-        else if(spot.equalsIgnoreCase("P")){
-          platforms.add(new Platform(j * multipleX, i * multipleY, multipleX, multipleY));
-        }
+      StringTokenizer st = new StringTokenizer(ln);
+      String key = st.nextToken();
+      if(key.equalsIgnoreCase("size")){
+        st = new StringTokenizer(reader.readLine());
+        map_size = Integer.parseInt(st.nextToken());
+      }
+      else if(key.equalsIgnoreCase("player")){
+        st = new StringTokenizer(reader.readLine());
+        Main.player = new Player(
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size), 
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size),
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size),
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size));
+      }
+      else if(key.equalsIgnoreCase("platform")){
+        st = new StringTokenizer(reader.readLine());
+        Main.platforms.add(new Platform(
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size),
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size),
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size),
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size)));
+      }
+      else if(key.equalsIgnoreCase("enemy")){
+        st = new StringTokenizer(reader.readLine());
+        Main.enemies.add(new Enemy(
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size),
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size),
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size),
+          (int)(Integer.parseInt(st.nextToken()) * screen_size / map_size)));
       }
     }
-    frame = new Frame("Gravity", map_size + multipleX, map_size + multipleY * 2);
+    frame = new Frame("Gravity", screen_size + screen_size / map_size);
   }
 }
