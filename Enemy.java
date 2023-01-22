@@ -58,14 +58,13 @@ public class Enemy extends Thing{
           if(this.getMaxX() > platform.getMinX() && this.getMaxX() < platform.getMaxX()){
             this.blockedRight = true;
             this.blockedLeft = false;
-            this.velocityX = this.velocityX > 0 ? 0 : this.velocityX;
           }
           else if(this.getMinX() < platform.getMaxX() && this.getMinX() > platform.getMinX()){
             this.blockedLeft = true;
             this.blockedRight = false;
-            this.velocityX = this.velocityX < 0 ? 0 : this.velocityX;
           }
         }
+        this.leavePlat(platform);
       }
       else{
         countX ++;
@@ -79,6 +78,32 @@ public class Enemy extends Thing{
     if(countY == Main.platforms.size()){
       this.blockedTop = false;
       this.onPlatform = false;
+    }
+    if(this.blockedLeft){
+      this.velocityX = this.SPEED_X;
+    }
+    else if(this.blockedRight){
+      this.velocityX = -this.SPEED_X;
+    }
+  }
+  public void leavePlat(Platform plat){
+    if(this.onPlatform){
+      this.x -= this.getMaxY() - plat.getMinY() - 1;
+    }
+    else if(this.blockedTop){
+      while(this.getMinY() < plat.getMaxY()){
+        this.x += 1;
+      }
+    }
+    else if(this.blockedRight){
+      while(this.getMaxX() > plat.getMinX()){
+        this.x -= 1;
+      }
+    }
+    else if(this.blockedLeft){
+      while(this.getMinX() < plat.getMaxX()){
+        this.x += 1;
+      }
     }
   }
   public void draw(Graphics g){
